@@ -1,5 +1,7 @@
 package no.vipps.md.qr_app
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import com.google.zxing.Result
@@ -32,10 +34,20 @@ class ScanActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
         // Log.v("tag", rawResult.getText()); // Prints scan results
         // Log.v("tag", rawResult.getBarcodeFormat().toString()); // Prints the scan format (qrcode, pdf417 etc.)
 
-        MainActivity.tvresult!!.setText(rawResult.text)
+        var qrValues = rawResult.text.split(",")
+
+        val intent = Intent(Intent.ACTION_VIEW)
+        val url = "vipps://?action=inAppPayment&appID=500094684&amount=${qrValues[0]}&merchantSerialNumber=210823&orderID=${qrValues[1]}"
+
+
+        intent.setData(Uri.parse(url))
+        MainActivity.tvresult!!.setText(intent.toString())
+        startActivity(intent)
         onBackPressed()
 
         // If you would like to resume scanning, call this method below:
         //mScannerView.resumeCameraPreview(this);
     }
+
+
 }
